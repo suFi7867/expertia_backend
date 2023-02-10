@@ -1,13 +1,14 @@
 require("dotenv").config();
 const UserModel = require("../routes/user/user.model");
 const bcrypt = require("bcrypt");
-const CreateToken = require("../middleware/CreateToken");
+const GenerateToken = require("../middleware/CreateToken");
 
 
 // Get all users / seperate user data  
 const AllUsers = async (req,res)=>{
     
     const username = req.body.username
+
     try {
         if (username) {
             let data = await UserModel.find({username});
@@ -41,7 +42,7 @@ const loginUser = async (req, res)=>{
         if (match) {
            
             // it will create JWT TOKENS and will return it
-            const { token, refresh_token } = CreateToken({
+            const { token, refresh_token } = GenerateToken({
                 _id: User._id,
                 email: User.email,
                 username: User.username,
@@ -75,11 +76,11 @@ console.log(req.body)
     }
 
     try {
-        const exsist = await UserModel.findOne({ email });
+        const exsist = await UserModel.findOne({ username });
         if (exsist)
             return res
                 .status(403)
-                .send({ message: "User Already Created Try Logging in" });
+                .send({ message: "UserName already exist ,try Different UserName" });
 
         bcrypt.hash(password, 6, async function (err, hash) {
             if (err) {
@@ -96,7 +97,7 @@ console.log(req.body)
             await user.save();
       
             // it will create JWT TOKENS and will return it
-            const { token, refresh_token } = CreateToken({
+            const { token, refresh_token } = GenerateToken({
                 _id: user._id,
                 email: user.email,
                 username: user.username,
@@ -111,6 +112,8 @@ console.log(req.body)
         return res.status(404).send(er.message);
     }
 }
+
+
 
 // Task 
 const TaskPost = async (req,res) =>{
