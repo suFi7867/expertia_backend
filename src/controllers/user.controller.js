@@ -31,7 +31,7 @@ const loginUser = async (req, res)=>{
 
     try {
         const match = bcrypt.compareSync(password, User.password);
-        console.log(match, "<AT")
+      //  console.log(match, "<AT")
         if (match) {
             //login
             const token = jwt.sign(
@@ -64,7 +64,7 @@ const loginUser = async (req, res)=>{
             return res.status(401).send({ message: "Authentication Failed" });
         }
     } catch {
-        return res.status(401).send({ message: "Authentication Failed" });
+        return res.status(401).send({ message: "User Doesnt Exist" });
     }
 }
 
