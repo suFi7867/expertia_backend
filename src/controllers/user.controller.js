@@ -1,19 +1,25 @@
 require("dotenv").config();
 const UserModel = require("../routes/user/user.model");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+const CreateToken = require("../middleware/CreateToken");
 
-const SECRET_TOKEN = process.env.SECRET_TOKEN
 
+// Get all users / seperate user data  
 const AllUsers = async (req,res)=>{
+    
+    const username = req.body.username
     try {
-        let data = await UserModel.find();
-        return res.status(200).send(data);
+        if (username) {
+            let data = await UserModel.find({username});
+            return res.status(200).send(data);
+        }else{
+            let data = await UserModel.find();
+            return res.status(200).send(data);
+        }  
     } catch (er) {
         return res.status(404).send(er.message);
     }
 }
-
 
 // Login Route
 const loginUser = async (req, res)=>{
@@ -31,35 +37,20 @@ const loginUser = async (req, res)=>{
 
     try {
         const match = bcrypt.compareSync(password, User.password);
-      //  console.log(match, "<AT")
+      
         if (match) {
-            //login
-            const token = jwt.sign(
-                {
-                    _id: User._id,
-                    email: User.email,
-                    username: User.username,
-                },
-                SECRET_TOKEN,
-                {
-                    expiresIn: "7 days",
-                }
-            );
-            const refresh_token = jwt.sign(
-                {
-                    _id: User._id,
-                    email: User.email,
-                    username: User.username,
-                },
-                SECRET_TOKEN,
-                {
-                    expiresIn: "28 days",
-                }
-            );
-          //  console.log(token, SECRET_TOKEN, refresh_token)
+           
+            // it will create JWT TOKENS and will return it
+            const { token, refresh_token } = CreateToken({
+                _id: User._id,
+                email: User.email,
+                username: User.username,
+            })
+           //console.log(tokens)
+           
             return res
                 .status(200)
-                .send({ message: "Login success", token, refresh_token, username });
+                .send({ message: "Login success" ,token, refresh_token, username });
         } else {
             return res.status(401).send({ message: "Authentication Failed" });
         }
@@ -103,18 +94,40 @@ const registerUser = async (req, res) => {
             });
 
             await user.save();
+      
+            // it will create JWT TOKENS and will return it
+            const { token, refresh_token } = CreateToken({
+                _id: user._id,
+                email: user.email,
+                username: user.username,
+            })
+
             return res
                 .status(200)
-                .send({ message: "Signup success" });
-
+                .send({ message: "Signup success", token, refresh_token, username });
+                
         });
     } catch (er) {
         return res.status(404).send(er.message);
     }
 }
 
+// Task 
+const TaskPost = async (req,res) =>{
+
+    const { username } = req.body;
+    if (!username) return res.status(403).send("Something went wrong");
+
+   try{
+       const User = await UserModel.findOne({ username });
+       console.log(User)
+   }catch(e){
+
+   }
+}
+
 module.exports =  {
-    AllUsers, loginUser , registerUser
+    AllUsers, loginUser, registerUser, TaskPost
 }
 
 
