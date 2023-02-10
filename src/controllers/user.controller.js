@@ -12,11 +12,11 @@ const AllUsers = async (req,res)=>{
 }
 
 const registerUser = async (req, res)=>{
-    res.status(200).send("DONE")
+    return res.status(404).send({message : "Register"});
 }
 
 const loginUser = async (req, res) => {
-    res.status(200).send("DONE")
+    return res.status(404).send({ message: "Login" });
 }
 
 module.exports =  {

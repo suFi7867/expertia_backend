@@ -1,17 +1,22 @@
 require("dotenv").config();
 
 const express = require("express")
-const connectDatabase = require("./database/db")  // to connect MongoDB
+const app = express()
+const cors = require("cors");
+const connectDatabase = require("./database/db") 
+ // to connect MongoDB
 
-const userRouter = require("./routes/user/user.router");  // All Routers 
+const userRouter = require("./routes/user/user.router");  
+// All Routers 
 
 const PORT = process.env.PORT || 3005
 
-const app = express()
+// Deafult Midllewares
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))
+app.use(cors());
 
-
+// Routes
 app.use("/user", userRouter)
 
 app.use("/", (req,res)=>{
