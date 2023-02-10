@@ -7,11 +7,11 @@ const GenerateToken = require("../middleware/CreateToken");
 // Get all users / seperate user data  
 const GetUsers = async (req,res)=>{
     
-    const username = req.body.username
-
+    const { id } = req.params
+    
     try {
-        if (username) {
-            let data = await UserModel.find({username});
+        if (id) {
+            let data = await UserModel.findById(id);
             return res.status(200).send(data);
         }else{
             let data = await UserModel.find();
@@ -51,7 +51,7 @@ const loginUser = async (req, res)=>{
            
             return res
                 .status(200)
-                .send({ message: "Login success" ,token, refresh_token, username });
+                .send({ message: "Login success", token, refresh_token, username, id: User._id });
         } else {
             return res.status(401).send({ message: "Authentication Failed" });
         }
@@ -107,15 +107,13 @@ const registerUser = async (req, res) => {
 
             return res
                 .status(200)
-                .send({ message: "Signup success", token, refresh_token, username });
+                .send({ message: "Signup success", token, refresh_token, username, id: user._id });
 
         });
     } catch (er) {
         return res.status(404).send(er.message);
     }
 }
-
-
 
 // Task 
 const TaskPost = async (req,res) =>{
