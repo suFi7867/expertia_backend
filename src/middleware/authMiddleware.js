@@ -6,7 +6,7 @@ const privateRoute = async(req,res, next)=>{
 
     let authToken;
 
-    if (req.headers.authorization && req.headers.authorization.startWith("Bearer")){
+    if (req.headers.authorization && req.headers.authorization.startsWith("Bearer")){
 
         try{
             authToken = req.headers.authorization.split(" ")[1]
@@ -14,7 +14,7 @@ const privateRoute = async(req,res, next)=>{
             // Verify the JWT Token
             const decodedtoken = jwt.verify(authToken, process.env.SECRET_TOKEN)
 
-            // Get the user Data from the TOKEN
+            // Get the user Data from the TOKEN => .select(-password will not include password)
             req.user = await UserModel.findById(decodedtoken.id).select("-password")
             next()
 
@@ -25,7 +25,7 @@ const privateRoute = async(req,res, next)=>{
     }
 
     if(!authToken){
-        return res.status(401).send({ message: "Please add token" })
+        return res.status(401).send({ message: "Not Authorized" })
     }
 
 }
