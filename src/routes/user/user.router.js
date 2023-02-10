@@ -6,8 +6,8 @@ const { privateRoute } = require("../../middleware/authMiddleware");
 const app = Router();
 
 
-// protected with Private Routes
-app.get("/", privateRoute, GetUsers);
+
+app.get("/",  GetUsers);
 
 // Login Route
 app.post("/register" , registerUser)
@@ -16,6 +16,7 @@ app.post("/register" , registerUser)
 app.post("/login", loginUser)
 
 // Task Route
+// protected with Private Routes
 app.post("/task", privateRoute, TaskPost)
 
 module.exports = app;

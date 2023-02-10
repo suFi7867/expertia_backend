@@ -68,7 +68,7 @@ const registerUser = async (req, res) => {
         username,
     } = req.body;
 
-console.log(req.body)
+//console.log(req.body)
 
 
     if (!email || !password || !username) {
@@ -76,11 +76,13 @@ console.log(req.body)
     }
 
     try {
-        const exsist = await UserModel.findOne({ username });
-        if (exsist)
+        // checking username and email should be unique , also added in schema
+        const usernameExsist = await UserModel.findOne({ username });
+        const emailExsist = await UserModel.findOne({ email });
+        if ( usernameExsist || emailExsist)
             return res
                 .status(403)
-                .send({ message: "UserName already exist ,try Different UserName" });
+                .send({ message: "UserName already exist ,try Different UserName or Email" });
 
         bcrypt.hash(password, 6, async function (err, hash) {
             if (err) {
