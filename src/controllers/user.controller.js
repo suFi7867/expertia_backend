@@ -64,7 +64,7 @@ const loginUser = async (req, res)=>{
             return res.status(401).send({ message: "Authentication Failed" });
         }
     } catch {
-        return res.status(401).send({ message: "User Doesnt Exist" });
+        return res.status(401).send({ message: "No User Found" });
     }
 }
 
@@ -98,7 +98,8 @@ const registerUser = async (req, res) => {
             const user = await UserModel({
                 email,
                 password: hash,
-                username
+                username ,
+                tasks : []
             });
 
             await user.save();
