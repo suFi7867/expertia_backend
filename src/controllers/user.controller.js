@@ -67,7 +67,7 @@ const registerUser = async (req, res) => {
         username,
     } = req.body;
 
-    console.log(req.body)
+console.log(req.body)
 
 
     if (!email || !password || !username) {
@@ -105,7 +105,7 @@ const registerUser = async (req, res) => {
             return res
                 .status(200)
                 .send({ message: "Signup success", token, refresh_token, username });
-                
+
         });
     } catch (er) {
         return res.status(404).send(er.message);
@@ -115,16 +115,25 @@ const registerUser = async (req, res) => {
 // Task 
 const TaskPost = async (req,res) =>{
 
-    const { username } = req.body;
+    const { username, task ,date ,dateF} = req.body;
     if (!username) return res.status(403).send("Something went wrong");
 
    try{
-       const User = await UserModel.findOne({ username });
-       console.log(User)
-   }catch(e){
+        
+       const taskObj = { date: "11th Feb, 2023", task, dateF: "11022023" }  
+       let addData = await UserModel.updateOne(
+           { username },
+           { $push: { tasks: taskObj } }
+       );
 
+       return res.status(200).send(addData)
+
+   }catch(e){
+       return res.status(404).send(er.message);
    }
 }
+
+
 
 module.exports =  {
     AllUsers, loginUser, registerUser, TaskPost
