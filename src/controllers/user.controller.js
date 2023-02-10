@@ -5,7 +5,7 @@ const GenerateToken = require("../middleware/CreateToken");
 
 
 // Get all users / seperate user data  
-const AllUsers = async (req,res)=>{
+const GetUsers = async (req,res)=>{
     
     const username = req.body.username
 
@@ -139,7 +139,7 @@ const TaskPost = async (req,res) =>{
 
 
 module.exports =  {
-    AllUsers, loginUser, registerUser, TaskPost
+    GetUsers, loginUser, registerUser, TaskPost
 }
 
 
