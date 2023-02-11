@@ -118,12 +118,12 @@ const registerUser = async (req, res) => {
 // Task 
 const TaskPost = async (req,res) =>{
 
-    const { username, task ,date ,dateF} = req.body;
+    const { username, task ,dateF} = req.body;
     if (!username) return res.status(403).send("Something went wrong");
 
    try{
         
-       const taskObj = { date: "11th Feb, 2023", task, dateF: "11022023" }  
+       const taskObj = { task, dateF }  
        let addData = await UserModel.updateOne(
            { username },
            { $push: { tasks: taskObj } }
